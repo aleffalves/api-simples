@@ -13,17 +13,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProfissionalControllerTest {
@@ -59,7 +65,7 @@ public class ProfissionalControllerTest {
                 .nascimento(new Date())
                 .build();
 
-        when(profissionalService.create(any(ProfissionalRequestDTO.class))).thenReturn(responseDTO);
+        when(profissionalService.criar(any(ProfissionalRequestDTO.class))).thenReturn(responseDTO);
 
         mockMvc.perform(post("/profissionais")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -98,6 +104,64 @@ public class ProfissionalControllerTest {
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isBadRequest());
 
+    }
+
+    @Test
+    @DisplayName("Sucesso ao listar profissionais sem filtro")
+    public void testListarProfissionaisSemFiltros() throws Exception {
+        List<Map<String, Object>> profissionaisMock = List.of(
+                Map.of("id", 1, "nome", "João Silva"),
+                Map.of("id", 2, "nome", "Maria Santos")
+        );
+
+        when(profissionalService.buscar(null, null)).thenReturn(profissionaisMock);
+
+        mockMvc.perform(get("/profissionais"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].nome").value("João Silva"));
+    }
+
+    @Test
+    @DisplayName("Sucesso ao listar profissionais com filtro")
+    public void testListarProfissionaisComFiltroDeTexto() throws Exception {
+        String query = "João";
+        List<Map<String, Object>> profissionaisMock = List.of(
+                Map.of("id", 1, "nome", "João Silva")
+        );
+
+        when(profissionalService.buscar(query, null)).thenReturn(profissionaisMock);
+
+        mockMvc.perform(get("/profissionais").param("q", query))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].nome").value("João Silva"));
+    }
+
+    @Test
+    @DisplayName("Sucesso ao listar profissionais com campos especificos")
+    public void testListarProfissionaisComCamposEspecificos() {
+        List<String> fields = List.of("id", "nome");
+        List<Map<String, Object>> profissionaisMock = List.of(
+                Map.of("id", 1, "nome", "João Silva")
+        );
+
+        when(profissionalService.buscar(null, fields)).thenReturn(profissionaisMock);
+
+        ResponseEntity<List<Map<String, Object>>> response = profissionalController.listarProfissionais(null, fields);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(profissionaisMock, response.getBody());
+    }
+
+    @Test
+    @DisplayName("Sucesso ao listar profissionais sem resultados")
+    public void testListarProfissionaisSemResultados() throws Exception {
+        when(profissionalService.buscar(null, null)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/profissionais"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
 }

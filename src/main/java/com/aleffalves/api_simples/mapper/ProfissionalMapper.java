@@ -5,7 +5,9 @@ import com.aleffalves.api_simples.dto.ProfissionalResponseDTO;
 import com.aleffalves.api_simples.model.Profissional;
 import org.mapstruct.Mapper;
 
-@Mapper
+import java.util.List;
+
+@Mapper(uses = {ContatoMapper.class})
 public interface ProfissionalMapper {
 
     Profissional toRequestEntity(ProfissionalRequestDTO dto);
@@ -13,5 +15,7 @@ public interface ProfissionalMapper {
 
     Profissional toResponseEntity(ProfissionalResponseDTO dto);
     ProfissionalResponseDTO toResponseDTO(Profissional entity);
+
+    List<ProfissionalResponseDTO> toResponseDTO(List<Profissional> entity);
 
 }
