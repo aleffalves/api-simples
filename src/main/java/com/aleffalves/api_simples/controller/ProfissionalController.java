@@ -50,6 +50,46 @@ public class ProfissionalController {
         return ResponseEntity.status(HttpStatus.OK).body(profissionalService.buscar(q, fields));
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profissional retornado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao buscar profissional"),
+            @ApiResponse(responseCode = "500", description = "Erro no servidor"),}
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Buscar profissional por id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ProfissionalResponseDTO> buscarPorId(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(profissionalService.buscarPorId(id));
+    }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Profissional atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Input inválido"),
+            @ApiResponse(responseCode = "500", description = "Erro no servidor"),}
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Atualizar profissional")
+    @PutMapping("/{id}")
+    public ResponseEntity<String> atualizar(@PathVariable Long id, @Valid @RequestBody ProfissionalRequestDTO profissionalRequestDTO) {
+        profissionalService.atualizar(id, profissionalRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Sucesso cadastrado alterado");
+
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profissional deletado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao deletar profissional"),
+            @ApiResponse(responseCode = "500", description = "Erro no servidor"),}
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Deletar profissional")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
+        profissionalService.deletar(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Sucesso profissional excluído");
+
+    }
 
 }

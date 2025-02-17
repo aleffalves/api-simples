@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProfissionalService {
@@ -48,4 +49,58 @@ public class ProfissionalService {
             throw new RuntimeException("Erro ao buscar profissionais: " + e.getMessage(), e);
         }
     }
+
+    @Transactional(readOnly = true)
+    public ProfissionalResponseDTO buscarPorId(Long id) {
+        try {
+            Optional<Profissional> profissionalOpt = profissionalRepository.findById(id);
+            if(profissionalOpt.isPresent()){
+                Profissional profissional = profissionalOpt.get();
+                return profissionalMapper.toResponseDTO(profissional);
+            } else {
+                throw new RuntimeException("Profissional não encontrado com o ID: " + id);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar profissional: " + e.getMessage(), e);
+        }
+    }
+
+    public ProfissionalResponseDTO atualizar(Long id, ProfissionalRequestDTO profissionalRequestDTO) {
+        try {
+            Optional<Profissional> profissionalOpt = profissionalRepository.findById(id);
+
+            if (profissionalOpt.isPresent()) {
+                Profissional profissional = profissionalOpt.get();
+
+                profissional.setNome(profissionalRequestDTO.getNome());
+                profissional.setCargo(profissionalRequestDTO.getCargo());
+                profissional.setNascimento(profissionalRequestDTO.getNascimento());
+
+                return profissionalMapper.toResponseDTO(profissionalRepository.save(profissional));
+            } else {
+                throw new RuntimeException("Profissional não encontrado com o ID: " + id);
+            }
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao atualizar profissional: " + e.getMessage(), e);
+        }
+    }
+
+    public void deletar(Long id) {
+        try {
+            Optional<Profissional> profissionalOpt = profissionalRepository.findById(id);
+
+            if (profissionalOpt.isPresent()) {
+                Profissional profissional = profissionalOpt.get();
+
+                profissional.setExcluido(true);
+                profissionalRepository.save(profissional);
+            } else {
+                throw new RuntimeException("Profissional não encontrado com o ID: " + id);
+            }
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao deletar profissional: " + e.getMessage(), e);
+        }
+    }
+
+
 }

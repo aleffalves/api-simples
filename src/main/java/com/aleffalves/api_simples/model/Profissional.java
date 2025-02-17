@@ -3,16 +3,21 @@ package com.aleffalves.api_simples.model;
 import com.aleffalves.api_simples.enumeration.CargoEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
+
 import java.util.Date;
 import java.util.List;
 
+@Builder
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "profissional")
+@Where(clause = "excluido = false")
 public class Profissional {
 
     @Id
@@ -30,8 +35,8 @@ public class Profissional {
     @Column(name = "nascimento")
     private Date nascimento;
 
-    @Column(name = "excluido")
-    private Boolean excluido;
+    @Column(name = "excluido", nullable = false)
+    private Boolean excluido = false;
 
     @Column(name = "created_date", nullable = false, updatable = false)
     private Date createdDate;
