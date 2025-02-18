@@ -47,5 +47,6 @@ public class Profissional {
     @PrePersist
     private void saveDate(){
         createdDate = new Date();
+        excluido = false;
     }
 }

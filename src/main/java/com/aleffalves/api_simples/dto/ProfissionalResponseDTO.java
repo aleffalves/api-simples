@@ -29,6 +29,6 @@ public class ProfissionalResponseDTO {
     private Date createdDate;
 
     @Schema(description = "Lista de contatos")
-    private List<ContatoDTO> contatos;
+    private List<ContatoResponseDTO> contatos;
 
 }
