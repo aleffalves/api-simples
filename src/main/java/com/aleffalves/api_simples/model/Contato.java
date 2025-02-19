@@ -2,10 +2,12 @@ package com.aleffalves.api_simples.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
 
+@Builder
 @Entity
 @Data
 @NoArgsConstructor

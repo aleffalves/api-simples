@@ -89,7 +89,6 @@ public class ProfissionalServiceTest {
 
     @Test
     void testCriarProfissional_ErroAoSalvar() {
-        // Configuração dos mocks para simular uma exceção
         when(profissionalMapper.toRequestEntity(requestDTO)).thenReturn(profissional);
         when(profissionalRepository.save(profissional)).thenThrow(new RuntimeException("Erro ao salvar no banco de dados"));
 

@@ -2,8 +2,6 @@ package com.aleffalves.api_simples.controller;
 
 import com.aleffalves.api_simples.dto.ContatoRequestDTO;
 import com.aleffalves.api_simples.dto.ContatoResponseDTO;
-import com.aleffalves.api_simples.dto.ProfissionalRequestDTO;
-import com.aleffalves.api_simples.dto.ProfissionalResponseDTO;
 import com.aleffalves.api_simples.service.ContatoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
