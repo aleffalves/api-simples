@@ -74,6 +74,3 @@ A documentação interativa da API pode ser acessada através de:
 http://localhost:8080/swagger-ui.html
 ```
 
-## Autor
-Este projeto foi desenvolvido por [Seu Nome].
-
